@@ -1,94 +1,131 @@
 import { Link } from "react-router-dom";
-import { BarChart3, Wallet, Clock3, Bot, Target, Sparkles } from "lucide-react";
+import {
+  BarChart2, Target, Wallet, Bot,
+  ArrowRight, TrendingUp, Shield,
+  TrendingDown,
+} from "lucide-react";
+
+const stats = [
+  { label: "Health Score",  value: "68 / 100",    delta: "−14 this month",    bad: true  },
+  { label: "Total Savings", value: "₹1,20,000",   delta: "+₹25k this month",  bad: false },
+  { label: "Goal Delay",    value: "+18 months",  delta: "After simulation",   bad: true  },
+  { label: "AI Suggestion", value: "Wait 3 Mo.",  delta: "Based on your data", bad: false },
+];
+
+const features = [
+  {
+    icon: Target,
+    title: "Predict Goal Delays",
+    desc: "See exactly how a purchase shifts your savings goals in time.",
+    to: "/goals",
+    accent: "text-indigo-400",
+    iconBg: "bg-indigo-500/10 border-indigo-500/20",
+  },
+  {
+    icon: Wallet,
+    title: "Analyze Purchase Impact",
+    desc: "Run a simulation before you spend to see the real financial cost.",
+    to: "/simulator",
+    accent: "text-sky-400",
+    iconBg: "bg-sky-500/10 border-sky-500/20",
+  },
+  {
+    icon: Bot,
+    title: "Get AI Financial Advice",
+    desc: "Receive personalized guidance based on your current financial picture.",
+    to: "/recommendation",
+    accent: "text-emerald-400",
+    iconBg: "bg-emerald-500/10 border-emerald-500/20",
+  },
+];
 
 function Landing() {
-  const stats = [
-    [BarChart3, "Health Score", "68/100"],
-    [Wallet, "Savings", "₹1,20,000"],
-    [Clock3, "Goal Delay", "+18 Months"],
-    [Bot, "AI Suggestion", "Wait 3 Months"],
-  ];
-
-  const features = [
-    [Target, "Predict Goal Delays"],
-    [Wallet, "Analyze Purchase Impact"],
-    [Bot, "Get AI Financial Advice"],
-  ];
-
   return (
-    <main className="relative flex min-h-[calc(100vh-72px)] items-center justify-center overflow-hidden px-6 py-10 text-center">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(168,85,247,0.25),transparent_30%),radial-gradient(circle_at_80%_70%,rgba(34,211,238,0.2),transparent_35%),radial-gradient(circle_at_50%_100%,rgba(59,130,246,0.15),transparent_40%)]" />
-
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
-
-      <section className="relative z-10 max-w-6xl">
-        <p className="mb-4 flex items-center justify-center gap-2 text-sm font-black uppercase tracking-[0.35em] text-cyan-300">
-          <Sparkles size={16} />
+    <main>
+      {/* ── Hero ── */}
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 md:py-32 text-center">
+        {/* Badge */}
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs font-semibold text-indigo-300 mb-7">
+          <Shield size={11} />
           AI-Powered Financial Intelligence
-        </p>
+        </span>
 
-        <h1 className="text-4xl font-black uppercase leading-[0.9] md:text-7xl">
-          See The Future Impact
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-tight">
+          See the impact of every purchase
           <br />
-          <span className="bg-gradient-to-r from-white via-purple-400 to-cyan-300 bg-clip-text">
-            Of Every Purchase
-          </span>
+          <span className="text-indigo-400">before you make it.</span>
         </h1>
 
-        <p className="mt-5 text-xl font-bold text-slate-300 md:text-2xl">
-          Student Financial Decision Simulator
+        <p className="mt-6 mx-auto max-w-2xl text-base sm:text-lg text-slate-400 leading-relaxed">
+          FinSight helps students simulate financial decisions and understand their
+          long-term consequences — before committing to a purchase.
         </p>
 
-        <p className="mt-4 text-2xl font-black text-purple-400 md:text-3xl">
-          Simulate. <span className="text-white">Analyze.</span>{" "}
-          <span className="text-cyan-300">Decide.</span>
-        </p>
-
-        <p className="mx-auto mt-3 max-w-2xl text-lg text-slate-300">
-          Most students track spending after mistakes. <br />
-          FinSight helps you evaluate decisions before making them.
-        </p>
-
-        <div className="mx-auto mt-6 grid max-w-4xl gap-4 rounded-3xl border border-cyan-400/25 bg-black/35 p-4 shadow-[0_0_35px_rgba(34,211,238,0.15)] backdrop-blur-xl md:grid-cols-4">
-          {stats.map(([Icon, label, value]) => (
-            <div
-              key={label}
-              className="rounded-2xl border border-white/10 bg-white/5 p-4"
-            >
-              <Icon size={28} className="mx-auto text-cyan-300" />
-              <p className="mt-2 text-sm text-slate-400">{label}</p>
-              <h3 className="mt-1 text-lg font-black text-cyan-300">
-                {value}
-              </h3>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-6 flex flex-col justify-center gap-4 sm:flex-row">
+        {/* CTAs */}
+        <div className="mt-9 flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
             to="/simulator"
-            className="rounded-full border border-purple-400/70 bg-white/5 px-8 py-4 font-black text-purple-300 transition hover:bg-purple-500/20"
+            className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-500 transition-colors"
           >
+            <TrendingUp size={15} />
             Analyze Purchase
+            <ArrowRight size={14} />
           </Link>
-
           <Link
             to="/dashboard"
-            className="rounded-full bg-gradient-to-r from-purple-500 to-cyan-400 px-8 py-4 font-black text-white shadow-[0_0_25px_rgba(34,211,238,0.35)] transition hover:scale-105"
+            className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.05] px-6 py-3 text-sm font-semibold text-slate-200 hover:bg-white/[0.09] transition-colors"
           >
+            <BarChart2 size={15} />
             View Dashboard
           </Link>
         </div>
+      </section>
 
-        <div className="mt-7 grid gap-5 md:grid-cols-3">
-          {features.map(([Icon, text]) => (
-            <div
-              key={text}
-              className="flex items-center justify-center gap-3 rounded-2xl border border-purple-400/25 bg-white/5 p-5 text-slate-200 backdrop-blur"
+      {/* ── Stats bar ── */}
+      <section className="border-y border-white/[0.07] bg-[#0c0c18]/70 backdrop-blur-sm">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-white/[0.07]">
+            {stats.map(({ label, value, delta, bad }) => (
+              <div key={label} className="px-6 py-6">
+                <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">{label}</p>
+                <p className="mt-1.5 text-2xl font-bold text-white">{value}</p>
+                <p className={`mt-0.5 flex items-center gap-1 text-xs font-medium ${bad ? "text-rose-400" : "text-emerald-400"}`}>
+                  {bad ? <TrendingDown size={11} /> : <TrendingUp size={11} />}
+                  {delta}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Features ── */}
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+        <div className="mb-10 text-center">
+          <h2 className="text-xl font-bold text-white">What you can do with FinSight</h2>
+          <p className="mt-2 text-sm text-slate-500">Three core tools built for student financial clarity.</p>
+        </div>
+
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
+          {features.map(({ icon: Icon, title, desc, to, accent, iconBg }) => (
+            <Link
+              key={title}
+              to={to}
+              className="group flex flex-col gap-4 rounded-xl border border-white/[0.07] bg-[#0f0f1c]/80 p-6 hover:border-white/[0.15] hover:bg-[#111120] transition-all"
             >
-              <Icon size={24} className="text-cyan-300" />
-              <span>{text}</span>
-            </div>
+              <div className={`inline-flex h-10 w-10 items-center justify-center rounded-lg border ${iconBg}`}>
+                <Icon size={19} className={accent} />
+              </div>
+              <div>
+                <h3 className={`font-semibold text-white group-hover:${accent} transition-colors`}>
+                  {title}
+                </h3>
+                <p className="mt-1 text-sm text-slate-500 leading-relaxed">{desc}</p>
+              </div>
+              <div className={`flex items-center gap-1 text-xs font-semibold ${accent}`}>
+                Get started <ArrowRight size={12} />
+              </div>
+            </Link>
           ))}
         </div>
       </section>

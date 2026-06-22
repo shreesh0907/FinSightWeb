@@ -1,15 +1,36 @@
 function ResultCard({ title, value, change, type = "neutral" }) {
-  const colors = {
-    danger: "text-rose-400 border-rose-400/30 bg-rose-400/5",
-    warning: "text-yellow-300 border-yellow-300/30 bg-yellow-300/5",
-    neutral: "text-cyan-300 border-cyan-300/30 bg-cyan-300/5",
+  const styles = {
+    danger: {
+      border: "border-rose-500/20",
+      bg:     "bg-rose-500/[0.07]",
+      value:  "text-rose-300",
+      badge:  "bg-rose-500/10 text-rose-400 border border-rose-500/20",
+    },
+    warning: {
+      border: "border-amber-500/20",
+      bg:     "bg-amber-500/[0.07]",
+      value:  "text-amber-300",
+      badge:  "bg-amber-500/10 text-amber-400 border border-amber-500/20",
+    },
+    neutral: {
+      border: "border-indigo-500/20",
+      bg:     "bg-indigo-500/[0.07]",
+      value:  "text-indigo-300",
+      badge:  "bg-indigo-500/10 text-indigo-400 border border-indigo-500/20",
+    },
   };
 
+  const s = styles[type];
+
   return (
-    <div className={`rounded-2xl border p-5 ${colors[type]}`}>
-      <p className="text-sm text-slate-300">{title}</p>
-      <h3 className="mt-2 text-xl font-black">{value}</h3>
-      {change && <span className="mt-2 block text-sm">{change}</span>}
+    <div className={`rounded-lg border ${s.border} ${s.bg} p-4`}>
+      <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">{title}</p>
+      <p className={`mt-2 text-sm font-bold ${s.value} leading-snug`}>{value}</p>
+      {change && (
+        <span className={`mt-2 inline-block rounded-full px-2 py-0.5 text-xs font-medium ${s.badge}`}>
+          {change}
+        </span>
+      )}
     </div>
   );
 }

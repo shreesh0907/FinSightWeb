@@ -2,7 +2,12 @@ import { useState } from "react";
 import ResultCard from "../components/ResultCard";
 import { simulationResult } from "../data/demodata";
 import { apiRequest } from "../api";
-import { Laptop, Bot, ShieldAlert } from "lucide-react";
+import { ShoppingCart, BarChart2, ShieldAlert } from "lucide-react";
+
+const inputCls =
+  "w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 outline-none focus:border-indigo-500/60 focus:bg-white/[0.06] transition";
+const labelCls = "mb-1.5 mt-4 block text-xs font-medium text-slate-400 uppercase tracking-wide";
+const cardCls  = "rounded-xl border border-white/[0.07] bg-[#0f0f1c]/90 p-6";
 
 function Simulator() {
   const [formData, setFormData] = useState({
@@ -17,17 +22,12 @@ function Simulator() {
   const [result, setResult] = useState(simulationResult);
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
+  const handleChange = (e) =>
+    setFormData((p) => ({ ...p, [e.target.name]: e.target.value }));
 
   const handleSimulate = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     try {
       const res = await apiRequest("/simulate", "POST", {
         ...formData,
@@ -44,151 +44,124 @@ function Simulator() {
   };
 
   return (
-    <main className="px-6 pt-20 pb-12 md:px-16">
-      <div className="mb-10 text-center">
-        <p className="text-xl text-slate-300">
+    <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+      <div className="mb-8">
+        <h1 className="text-xl font-bold text-white">Purchase Simulator</h1>
+        <p className="text-sm text-slate-500 mt-0.5">
           Understand the financial consequences before you buy.
         </p>
       </div>
 
-      <section className="grid gap-6 lg:grid-cols-[1fr_1.6fr_0.95fr]">
-        <form
-          onSubmit={handleSimulate}
-          className="rounded-3xl border border-purple-400/40 bg-[#080819]/80 p-6 shadow-[0_0_25px_rgba(168,85,247,0.22)]"
-        >
-          <div className="mb-6 flex items-center gap-3 text-cyan-300">
-            <Laptop size={34} />
-            <h2 className="text-2xl font-black">Your Purchase</h2>
+      <div className="grid gap-5 grid-cols-1 lg:grid-cols-[1fr_1.6fr_0.95fr]">
+
+        {/* ── Form ── */}
+        <form onSubmit={handleSimulate} className={cardCls}>
+          <div className="flex items-center gap-2 mb-6">
+            <ShoppingCart size={16} className="text-indigo-400" />
+            <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Your Purchase</h2>
           </div>
 
           {[
-            ["Item Name", "itemName", "text"],
-            ["Cost", "cost", "number"],
-            ["Current Savings", "currentSavings", "number"],
-            ["Monthly Allowance", "monthlyAllowance", "number"],
+            ["Item Name",             "itemName",        "text"],
+            ["Cost (₹)",              "cost",            "number"],
+            ["Current Savings (₹)",   "currentSavings",  "number"],
+            ["Monthly Allowance (₹)", "monthlyAllowance","number"],
           ].map(([label, name, type]) => (
             <div key={name}>
-              <label className="mb-2 mt-4 block text-slate-300">{label}</label>
-              <input
-                className="w-full rounded-2xl border border-cyan-400/30 bg-white/5 px-4 py-3 outline-none focus:border-cyan-300"
-                name={name}
-                type={type}
-                value={formData[name]}
-                onChange={handleChange}
-              />
+              <label className={labelCls}>{label}</label>
+              <input className={inputCls} name={name} type={type}
+                     value={formData[name]} onChange={handleChange} />
             </div>
           ))}
 
-          <label className="mb-2 mt-4 block text-slate-300">Category</label>
-          <select
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            className="w-full rounded-2xl border border-cyan-400/30 bg-[#080819] px-4 py-3 outline-none focus:border-cyan-300"
-          >
+          <label className={labelCls}>Category</label>
+          <select name="category" value={formData.category} onChange={handleChange}
+                  className={inputCls + " bg-[#0f0f1c]"}>
             <option>Gadget</option>
             <option>Course</option>
             <option>Subscription</option>
             <option>Lifestyle</option>
           </select>
 
-          <button className="mt-7 w-full rounded-full bg-gradient-to-r from-purple-500 to-cyan-400 px-6 py-4 font-black shadow-[0_0_20px_rgba(34,211,238,0.25)] transition hover:scale-[1.02]">
-            {loading ? "Analyzing..." : "Analyze Financial Impact"}
+          <button type="submit" disabled={loading}
+                  className="mt-6 w-full rounded-lg bg-indigo-600 px-4 py-3 text-sm font-semibold text-white hover:bg-indigo-500 disabled:opacity-50 transition-colors">
+            {loading ? "Analyzing…" : "Analyze Financial Impact"}
           </button>
         </form>
 
-        <div className="rounded-3xl border border-cyan-400/30 bg-[#080819]/80 p-7 shadow-[0_0_25px_rgba(34,211,238,0.18)]">
-          <div className="mb-6 flex items-center gap-3 text-cyan-300">
-            <Bot size={34} />
-            <h2 className="text-2xl font-black">Impact Analysis</h2>
+        {/* ── Impact Analysis ── */}
+        <div className={cardCls}>
+          <div className="flex items-center gap-2 mb-6">
+            <BarChart2 size={16} className="text-indigo-400" />
+            <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Impact Analysis</h2>
           </div>
 
-          <div className="mb-6 rounded-2xl border border-cyan-400/20 bg-white/5 p-5">
-            <div className="mb-2 flex justify-between text-sm text-slate-400">
-              <span>Financial Health</span>
-              <span>
+          {/* Health bar */}
+          <div className="mb-5 rounded-lg border border-white/[0.07] bg-white/[0.03] p-4">
+            <div className="flex justify-between text-sm mb-2">
+              <span className="text-slate-500">Financial Health</span>
+              <span className="font-semibold text-slate-300">
                 {result.healthScoreBefore} → {result.healthScoreAfter}
               </span>
             </div>
-
-            <div className="h-3 overflow-hidden rounded-full bg-white/10">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-purple-500 to-cyan-400"
-                style={{ width: `${result.healthScoreAfter}%` }}
-              />
+            <div className="h-1.5 rounded-full bg-white/[0.07] overflow-hidden">
+              <div className="h-full rounded-full bg-indigo-500 transition-all duration-700"
+                   style={{ width: `${result.healthScoreAfter}%` }} />
             </div>
-
-            <p className="mt-3 text-sm text-slate-400">
-              Your financial health score drops after this purchase.
-            </p>
+            <p className="mt-2 text-xs text-slate-600">Health score drops after this purchase.</p>
           </div>
 
-          <div className="grid gap-5 md:grid-cols-2">
-            <ResultCard
-              title="Savings"
-              value={`₹${result.beforeSavings.toLocaleString(
-                "en-IN"
-              )} → ₹${result.afterSavings.toLocaleString("en-IN")}`}
-              change={`${result.savingsReductionPercent}% reduction`}
-              type="danger"
-            />
-
-            <ResultCard
-              title="Emergency Fund"
-              value={`${result.emergencyFundBefore} → ${result.emergencyFundAfter} Months`}
-              change="Safety net reduced"
-              type="warning"
-            />
-
-            <ResultCard
-              title="Health Score"
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
+            <ResultCard title="Savings"
+              value={`₹${result.beforeSavings.toLocaleString("en-IN")} → ₹${result.afterSavings.toLocaleString("en-IN")}`}
+              change={`${result.savingsReductionPercent}% reduction`} type="danger" />
+            <ResultCard title="Emergency Fund"
+              value={`${result.emergencyFundBefore} → ${result.emergencyFundAfter} months`}
+              change="Safety net reduced" type="warning" />
+            <ResultCard title="Health Score"
               value={`${result.healthScoreBefore} → ${result.healthScoreAfter}`}
-              change="Score decreased"
-              type="neutral"
-            />
-
-            <ResultCard
-              title="Goal Delay"
+              change="Score decreased" type="neutral" />
+            <ResultCard title="Goal Delay"
               value={`+${result.goalDelayMonths} Months`}
-              change="Goal delayed"
-              type="danger"
-            />
+              change="Goal pushed back" type="danger" />
           </div>
         </div>
 
-        <div className="flex flex-col justify-center rounded-3xl border border-yellow-300/30 bg-[#080819]/80 p-7">
-          <div className="text-center">
-            <ShieldAlert size={60} className="mx-auto text-yellow-300" />
-            <h2 className="mt-5 text-2xl font-black">AI Recommendation</h2>
-
-            <div className="my-5 rounded-2xl border border-yellow-300/20 bg-yellow-300/5 p-5">
-              <p className="text-sm text-slate-400">Risk Level</p>
-              <h1 className="mt-2 text-5xl font-black text-yellow-300">
-                {result.riskLevel}
-              </h1>
-            </div>
+        {/* ── AI Recommendation ── */}
+        <div className={`${cardCls} flex flex-col`}>
+          <div className="flex items-center gap-2 mb-6">
+            <ShieldAlert size={16} className="text-amber-400" />
+            <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-widest">AI Recommendation</h2>
           </div>
 
-          <div className="space-y-4 text-sm leading-relaxed text-slate-300">
-            <p>• Delays your selected goal by {result.goalDelayMonths} months.</p>
-            <p>
-              • Reduces emergency fund from {result.emergencyFundBefore} to{" "}
-              {result.emergencyFundAfter} months.
-            </p>
-            <p>
-              • Health score drops by{" "}
-              {result.healthScoreBefore - result.healthScoreAfter} points.
-            </p>
+          <div className="rounded-lg border border-amber-500/20 bg-amber-500/[0.07] p-4 text-center mb-5">
+            <p className="text-xs text-amber-400 font-semibold uppercase tracking-wide mb-1">Risk Level</p>
+            <p className="text-3xl font-bold text-amber-300">{result.riskLevel}</p>
           </div>
 
-          <div className="mt-6 rounded-2xl border border-cyan-400/20 bg-white/5 p-4">
-            <p className="text-sm font-bold text-cyan-300">Recommendation</p>
-            <p className="mt-2 text-slate-300">
-              Wait 3 months and save ₹15,000 more before purchasing this item.
+          <ul className="space-y-3 text-sm text-slate-400 mb-5">
+            <li className="flex items-start gap-2">
+              <span className="text-rose-400 shrink-0">•</span>
+              Delays goal by {result.goalDelayMonths} months.
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-amber-400 shrink-0">•</span>
+              Emergency fund drops from {result.emergencyFundBefore} to {result.emergencyFundAfter} months.
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-slate-600 shrink-0">•</span>
+              Health score falls by {result.healthScoreBefore - result.healthScoreAfter} points.
+            </li>
+          </ul>
+
+          <div className="mt-auto rounded-lg border border-indigo-500/20 bg-indigo-500/[0.07] p-4">
+            <p className="text-xs font-semibold text-indigo-400 uppercase tracking-wide mb-1">Advice</p>
+            <p className="text-sm text-slate-400">
+              Wait 3 months and save ₹15,000 more before making this purchase.
             </p>
           </div>
         </div>
-      </section>
+      </div>
     </main>
   );
 }

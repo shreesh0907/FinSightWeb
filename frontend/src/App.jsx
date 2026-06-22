@@ -9,13 +9,20 @@ import Recommendation from "./pages/Recommendation";
 function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-[#02020a] text-white bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.22),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(34,211,238,0.16),transparent_32%)]">
+      {/* Full-page gradient overlay sitting above the CSS grid */}
+      <div
+        className="relative min-h-screen text-slate-200"
+        style={{
+          background:
+            "radial-gradient(ellipse 90% 55% at 50% -5%, rgba(99,102,241,0.18) 0%, transparent 70%)",
+        }}
+      >
         <Navbar />
         <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/simulator" element={<Simulator />} />
-          <Route path="/goals" element={<Goals />} />
+          <Route path="/"               element={<Landing />} />
+          <Route path="/dashboard"      element={<Dashboard />} />
+          <Route path="/simulator"      element={<Simulator />} />
+          <Route path="/goals"          element={<Goals />} />
           <Route path="/recommendation" element={<Recommendation />} />
         </Routes>
       </div>

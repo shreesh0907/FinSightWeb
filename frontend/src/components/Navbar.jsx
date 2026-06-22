@@ -1,36 +1,106 @@
-import { NavLink } from "react-router-dom";
-import { Sparkles } from "lucide-react";
+import { useState } from "react";
+import { NavLink, Link } from "react-router-dom";
+import { BarChart2, Menu, X } from "lucide-react";
 
 function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+
   const navItems = [
     ["Home", "/"],
     ["Dashboard", "/dashboard"],
     ["Simulator", "/simulator"],
     ["Goals", "/goals"],
-    ["AI", "/recommendation"],
+    ["AI Advice", "/recommendation"],
   ];
 
   return (
-    <nav className="sticky top-0 z-50 flex items-center justify-between border-b border-white/10 bg-[#05050d]/90 px-6 py-5 backdrop-blur md:px-16">
-      <div className="flex items-center gap-2 text-2xl font-black">
-        <Sparkles size={24} className="text-yellow-300" />
-        <span>FinSight</span>
+    <header className="sticky top-0 z-50 border-b border-white/[0.07] bg-[#080810]/80 backdrop-blur-md">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+
+          {/* Logo */}
+          <Link
+            to="/"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-2 text-white hover:text-indigo-400 transition-colors"
+          >
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600">
+              <BarChart2 size={17} className="text-white" />
+            </div>
+            <span className="text-base font-bold tracking-tight">FinSight</span>
+          </Link>
+
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-0.5">
+            {navItems.map(([name, path]) => (
+              <NavLink
+                key={name}
+                to={path}
+                className={({ isActive }) =>
+                  `rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                    isActive
+                      ? "bg-indigo-500/15 text-indigo-300"
+                      : "text-slate-400 hover:bg-white/[0.05] hover:text-slate-200"
+                  }`
+                }
+              >
+                {name}
+              </NavLink>
+            ))}
+          </nav>
+
+          {/* Desktop CTA */}
+          <div className="hidden md:flex items-center">
+            <Link
+              to="/simulator"
+              className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500 transition-colors"
+            >
+              Try Simulator
+            </Link>
+          </div>
+
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="inline-flex md:hidden items-center justify-center rounded-md p-2 text-slate-400 hover:bg-white/[0.06] hover:text-slate-200 transition-colors"
+            aria-label="Toggle menu"
+          >
+            {isOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
 
-      <div className="flex gap-8 font-bold text-purple-300">
-        {navItems.map(([name, path]) => (
-          <NavLink
-            key={name}
-            to={path}
-            className={({ isActive }) =>
-              isActive ? "text-cyan-300" : "hover:text-cyan-300"
-            }
-          >
-            {name}
-          </NavLink>
-        ))}
-      </div>
-    </nav>
+      {/* Mobile menu */}
+      {isOpen && (
+        <div className="md:hidden border-t border-white/[0.07] bg-[#0c0c18] px-4 py-3 space-y-1">
+          {navItems.map(([name, path]) => (
+            <NavLink
+              key={name}
+              to={path}
+              onClick={() => setIsOpen(false)}
+              className={({ isActive }) =>
+                `block rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                  isActive
+                    ? "bg-indigo-500/15 text-indigo-300"
+                    : "text-slate-400 hover:bg-white/[0.05] hover:text-slate-200"
+                }`
+              }
+            >
+              {name}
+            </NavLink>
+          ))}
+          <div className="pt-2 border-t border-white/[0.07]">
+            <Link
+              to="/simulator"
+              onClick={() => setIsOpen(false)}
+              className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-indigo-500 transition-colors"
+            >
+              Try Simulator
+            </Link>
+          </div>
+        </div>
+      )}
+    </header>
   );
 }
 

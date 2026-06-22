@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { apiRequest } from "../api";
 import { goalDelayData } from "../data/demodata";
-import { Target, Clock3, AlertTriangle } from "lucide-react";
+import { Target, Clock, AlertTriangle } from "lucide-react";
+
+const inputCls =
+  "w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-slate-200 outline-none focus:border-indigo-500/60 focus:bg-white/[0.06] transition";
+const labelCls = "mb-1.5 mt-4 block text-xs font-medium text-slate-400 uppercase tracking-wide";
+const cardCls  = "rounded-xl border border-white/[0.07] bg-[#0f0f1c]/90 p-6";
 
 function Goals() {
   const [formData, setFormData] = useState({
@@ -13,16 +18,11 @@ function Goals() {
 
   const [result, setResult] = useState(goalDelayData);
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: Number(e.target.value),
-    }));
-  };
+  const handleChange = (e) =>
+    setFormData((p) => ({ ...p, [e.target.name]: Number(e.target.value) }));
 
   const calculateDelay = async (e) => {
     e.preventDefault();
-
     try {
       const res = await apiRequest("/goals/delay", "POST", formData);
       setResult(res.data);
@@ -31,117 +31,101 @@ function Goals() {
     }
   };
 
+  const gap = formData.goalAmount - formData.currentSavings;
+
   return (
-    <main className="px-6 pt-20 pb-12 md:px-16">
-      <div className="mb-10 text-center">
-        <p className="text-xl text-slate-300">
-          See how today's purchase affects tomorrow's goals.
-        </p>
+    <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+      <div className="mb-8">
+        <h1 className="text-xl font-bold text-white">Goal Planner</h1>
+        <p className="text-sm text-slate-500 mt-0.5">See how today's purchase affects tomorrow's goals.</p>
       </div>
 
-      <section className="grid gap-6 lg:grid-cols-[0.9fr_1.5fr]">
-        <form
-          onSubmit={calculateDelay}
-          className="rounded-3xl border border-purple-400/40 bg-[#080819]/80 p-7 shadow-[0_0_25px_rgba(168,85,247,0.16)]"
-        >
-          <div className="mb-6 flex items-center gap-3 text-cyan-300">
-            <Target size={34} />
-            <h2 className="text-2xl font-black">Goal Details</h2>
+      <div className="grid gap-5 grid-cols-1 lg:grid-cols-[0.9fr_1.5fr]">
+
+        {/* ── Form ── */}
+        <form onSubmit={calculateDelay} className={cardCls}>
+          <div className="flex items-center gap-2 mb-6">
+            <Target size={16} className="text-indigo-400" />
+            <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Goal Details</h2>
           </div>
 
           {[
-            ["Goal Amount", "goalAmount"],
-            ["Current Savings", "currentSavings"],
-            ["Monthly Savings", "monthlySavings"],
-            ["Purchase Cost", "purchaseCost"],
+            ["Goal Amount (₹)",    "goalAmount"],
+            ["Current Savings (₹)","currentSavings"],
+            ["Monthly Savings (₹)","monthlySavings"],
+            ["Purchase Cost (₹)",  "purchaseCost"],
           ].map(([label, name]) => (
             <div key={name}>
-              <label className="mb-2 mt-4 block text-slate-300">{label}</label>
-              <input
-                className="w-full rounded-2xl border border-cyan-400/30 bg-white/5 px-4 py-3 outline-none focus:border-cyan-300"
-                type="number"
-                name={name}
-                value={formData[name]}
-                onChange={handleChange}
-              />
+              <label className={labelCls}>{label}</label>
+              <input className={inputCls} type="number" name={name}
+                     value={formData[name]} onChange={handleChange} />
             </div>
           ))}
 
-          <button className="mt-7 w-full rounded-full bg-gradient-to-r from-purple-500 to-cyan-400 px-6 py-4 font-black shadow-[0_0_20px_rgba(34,211,238,0.25)] transition hover:scale-[1.02]">
+          <button type="submit"
+                  className="mt-6 w-full rounded-lg bg-indigo-600 px-4 py-3 text-sm font-semibold text-white hover:bg-indigo-500 transition-colors">
             Analyze Goal Impact
           </button>
         </form>
 
-        <div className="rounded-3xl border border-cyan-400/30 bg-[#080819]/80 p-8 shadow-[0_0_25px_rgba(34,211,238,0.14)]">
-          <div className="mb-7 flex items-center gap-3 text-cyan-300">
-            <Clock3 size={34} />
-            <h2 className="text-2xl font-black">Timeline Comparison</h2>
+        {/* ── Results ── */}
+        <div className={cardCls}>
+          <div className="flex items-center gap-2 mb-6">
+            <Clock size={16} className="text-indigo-400" />
+            <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Timeline Comparison</h2>
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-            <div className="mb-3 flex justify-between text-lg">
-              <span className="text-slate-300">Without Purchase</span>
-              <strong className="text-cyan-300">
-                {result.withoutPurchaseMonths} Months
-              </strong>
+          {/* Without purchase */}
+          <div className="rounded-lg border border-white/[0.07] bg-white/[0.03] p-4 mb-3">
+            <div className="flex justify-between text-sm mb-2">
+              <span className="text-slate-400">Without Purchase</span>
+              <span className="font-semibold text-emerald-400">{result.withoutPurchaseMonths} months</span>
             </div>
-            <div className="h-3 overflow-hidden rounded-full bg-white/10"> <div className="h-full w-[45%] rounded-full bg-linear-to-r from-purple-500 to-cyan-400" /> </div>
+            <div className="h-1.5 rounded-full bg-white/[0.07] overflow-hidden">
+              <div className="h-full w-[45%] rounded-full bg-emerald-500" />
+            </div>
           </div>
 
-
-          <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 p-5">
-            <div className="mb-3 flex justify-between text-lg">
-              <span className="text-slate-300">After Purchase</span>
-              <strong className="text-yellow-300">
-                {result.afterPurchaseMonths} Months
-              </strong>
+          {/* After purchase */}
+          <div className="rounded-lg border border-white/[0.07] bg-white/[0.03] p-4 mb-5">
+            <div className="flex justify-between text-sm mb-2">
+              <span className="text-slate-400">After Purchase</span>
+              <span className="font-semibold text-rose-400">{result.afterPurchaseMonths} months</span>
             </div>
-            <div className="h-3 overflow-hidden rounded-full bg-white/10"> <div className="h-full w-[90%] rounded-full bg-gradient-to-r from-yellow-400 to-rose-400" /> </div> 
+            <div className="h-1.5 rounded-full bg-white/[0.07] overflow-hidden">
+              <div className="h-full w-[90%] rounded-full bg-rose-500" />
+            </div>
           </div>
 
-          <div className="mt-6 rounded-3xl border border-rose-400/30 bg-rose-400/10 p-8 text-center">
-            <AlertTriangle size={56} className="mx-auto text-yellow-300" />
-
-            <p className="mt-4 text-sm font-bold uppercase tracking-[0.25em] text-rose-300">
-              Goal Delay
-            </p>
-
-            <h1 className="mt-3 text-5xl font-black text-rose-300">
-              +{result.delayMonths} Months
-            </h1>
-
-            <p className="mt-3 text-slate-300">
-              Your financial goal gets delayed if you make this purchase today.
-            </p>
+          {/* Delay callout */}
+          <div className="rounded-lg border border-rose-500/20 bg-rose-500/[0.07] p-5 flex items-center gap-4 mb-5">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rose-500/10">
+              <AlertTriangle size={19} className="text-rose-400" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-rose-400 mb-0.5">Goal Delay</p>
+              <p className="text-2xl font-bold text-rose-300">+{result.delayMonths} months</p>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Your goal gets pushed back if you make this purchase today.
+              </p>
+            </div>
           </div>
 
-          <div className="mt-6 grid gap-4 md:grid-cols-3">
-            <div className="rounded-2xl border border-cyan-400/20 bg-white/5 p-4">
-              <p className="text-sm text-slate-400">Current Gap</p>
-              <h3 className="mt-1 text-xl font-black text-cyan-300">
-                ₹
-                {(formData.goalAmount - formData.currentSavings).toLocaleString(
-                  "en-IN"
-                )}
-              </h3>
-            </div>
-
-            <div className="rounded-2xl border border-yellow-300/20 bg-white/5 p-4">
-              <p className="text-sm text-slate-400">Purchase Impact</p>
-              <h3 className="mt-1 text-xl font-black text-yellow-300">
-                ₹{formData.purchaseCost.toLocaleString("en-IN")}
-              </h3>
-            </div>
-
-            <div className="rounded-2xl border border-purple-400/20 bg-white/5 p-4">
-              <p className="text-sm text-slate-400">Monthly Saving</p>
-              <h3 className="mt-1 text-xl font-black text-purple-300">
-                ₹{formData.monthlySavings.toLocaleString("en-IN")}
-              </h3>
-            </div>
+          {/* Mini stat cards */}
+          <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
+            {[
+              { label: "Current Gap",    val: `₹${gap.toLocaleString("en-IN")}`,                         cls: "text-indigo-300"  },
+              { label: "Purchase Impact",val: `₹${formData.purchaseCost.toLocaleString("en-IN")}`,        cls: "text-amber-300"   },
+              { label: "Monthly Saving", val: `₹${formData.monthlySavings.toLocaleString("en-IN")}`,      cls: "text-emerald-300" },
+            ].map(({ label, val, cls }) => (
+              <div key={label} className="rounded-lg border border-white/[0.06] bg-white/[0.03] p-3">
+                <p className="text-xs text-slate-600 mb-1">{label}</p>
+                <p className={`text-base font-bold ${cls}`}>{val}</p>
+              </div>
+            ))}
           </div>
         </div>
-      </section>
+      </div>
     </main>
   );
 }
