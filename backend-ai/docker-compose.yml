@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: finsight-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    ironment:
+      - PORT=8000
+      - HOST=0.0.0.0
+      - IRONMENT=development
+      - MODEL_DIR=app/models
+    restart: unless-stopped
